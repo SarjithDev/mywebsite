@@ -5,6 +5,7 @@ let cart = [];
 function addToCart(productName, price) {
     cart.push({ name: productName, price: price });
     updateCartDisplay();
+    alert(`${productName} has been added to your cart!`);
 }
 
 // Update the cart display
