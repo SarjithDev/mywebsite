@@ -3,51 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopNow - Online Shopping</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- For Font Awesome Icons -->
+    <title>Ben 10 Universe</title>
+    <!-- Integrated CSS styles below -->
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-bg: #333;
+            --light-text: #fff;
+            --accent-color: #FF5722;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            cursor: default; /* Use custom cursor if you have 'omnitrix-cursor.png' image */
+            /* cursor: url('images/omnitrix-cursor.png'), auto; */
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        header {
+            background: #222;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary-green);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-green);
+        }
+
+        /* --- Omnitrix Selector Styles --- */
+        .omnitrix-selector {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .omnitrix-selector button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .omnitrix-selector button:hover {
+            background-color: #45a049;
+        }
+
+        .alien-profile {
+            background: #444;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-height: 400px;
+        }
+
+        #alien-image {
+            max-width: 200px;
+            height: auto;
+            margin-top: 15px;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        #alien-image:hover {
+            transform: scale(1.1); /* Zoom effect */
+        }
+
+        /* --- Episode Guide (Accordion) Styles --- */
+        .accordion {
+            background-color: #555;
+            color: var(--light-text);
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+            margin-bottom: 5px;
+        }
+
+        .accordion:hover, .active {
+            background-color: var(--primary-green);
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: #444;
+            display: none;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.2s ease-out;
+        }
+
+        /* --- Trivia Quiz Styles --- */
+        .quiz-container {
+            background: #444;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .quiz-container button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #result-message {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #222;
+            border-top: 3px solid var(--primary-green);
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Header Section -->
     <header>
-        <div class="logo">
-            <h1>ShopNow</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#categories">Categories</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-                <li><a href="#cart">Cart</a></li>
-            </ul>
-        </nav>
+        <h1>Welcome to the Ben 10 Universe</h1>
+        <p>Your portal to aliens, episodes, and trivia!</p>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home">
-        <div class="intro">
-            <h2>Welcome to ShopNow</h2>
-            <p>Your one-stop shop for the best products!</p>
-            <a href="#products" class="btn-shop-now">Shop Now</a>
-        </div>
-    </section>
-
-    <!-- Products Section -->
-    <section id="products">
-        <h2>Featured Products</h2>
-        <div class="product-list">
-            <div class="product">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4aaJsypduBeK8J9F4JvAFm0XfEnA3xegu0g&s" alt="Product 1" onclick="openModal('product1')">
-                <h3>Product 1</h3>
-                <p>$10.00</p>
-                <button class="add-to-cart">Add to Cart</button>
+    <div class="container">
+        <!-- Feature 1: Interactive Omnitrix -->
+        <section>
+            <h2>Omnitrix Alien Selector</h2>
+            <div class="omnitrix-selector">
+                <button onclick="changeAlien('heatblast')">Heatblast</button>
+                <button onclick="changeAlien('fourarms')">Fourarms</button>
+                <button onclick="changeAlien('diamondhead')">Diamondhead</button>
             </div>
-            <div class="product">
-                <img src="https://www.gearbest.ma/wp-content/uploads/2024/12/Sf511524a087b4b269d0f7d99744517e3v.webp" alt="Product 2" onclick="openModal('product2')">
-                <h3>Product 2</h3>
-                <p>$15.00</p>
+            <div class="alien-profile">
+                <h3 id="alien-name">Select an Alien Above</h3>
+                <img id="alien-image" src="images/default.png" alt="Alien Image Placeholder">
+                <p id="alien-abilities">Abilities will appear here when an alien is selected.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Feature 2: Episode Guide (Accordion) -->
+        <section>
+            <h2>Classic Series Episode Guide</h2>
+            
+            <button class="accordion">Season 1, Episode 1: And Then There Were 10</button>
+            <div class="panel">
+                <p><strong>Synopsis:</strong> Ben finds the Omnitrix during a boring family road trip with Grandpa Max and Gwen.</p>
+                <p><strong>Aliens Used:</strong> Heatblast, Four Arms, XLR8, Grey Matter.</p>
+            </div>
+
+            <button class="accordion">Season 1, Episode 2: Washington B.C.</button>
+            <div class="panel">
+                <p><strong>Synopsis:</strong> Ben battles a massive stone creature brought to life by the alien, Vilgax's, robot drones.</p>
+                <p><strong>Aliens Used:</strong> Diamondhead, Heatblast.</p>
+            </div>
+
+            <!-- Add more episodes as needed -->
+
+        </section>
+
+        <hr>
+
+        <!-- Feature 3: Ben 10 Trivia Quiz -->
+        <section>
+            <h2>Ben 10 Trivia Challenge!</h2>
+            <div class="quiz-container">
+                <h3 id="question">Question 1: What alien does Ben first *try* to turn into?</h3>
+                <button onclick="checkAnswer('fourarms')">Four Arms</button>
+                <button onclick="checkAnswer('heatblast')">Heatblast</button>
+                <p id="result-message"></p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Ben 10 Fan Site | For GitHub Upload</p>
+    </footer>
+
+    <!-- Integrated JavaScript scripts below -->
+    <script>
+        // --- Feature 1 JS: Omnitrix Selector ---
+        function changeAlien(alienName) {
+            const nameElement = document.getElementById('alien-name');
+            const imageElement = document.getElementById('alien-image');
+            const abilitiesElement = document.getElementById('alien-abilities');
+
+            switch(alienName) {
+                case 'heatblast':
+                    nameElement.textContent = 'Heatblast';
+                    imageElement.src = 'images/heatblast.png'; 
+                    abilitiesElement.textContent = 'Pyrokinesis, fire resistance, flight via fire propulsion, intense heat generation.';
+                    break;
+                case 'fourarms':
+                    nameElement.textContent = 'Four Arms';
+                    imageElement.src = 'images/fourarms.png'; 
+                    abilitiesElement.textContent = 'Super strength, enhanced durability, shockwaves by clapping hands, heavy lifting.';
+                    break;
+                case 'diamondhead':
+                    nameElement.textContent = 'Diamondhead';
+                    imageElement.src = 'images/diamondhead.png'; // Need this image
+                    abilitiesElement.textContent = 'Crystallokinesis, body restructuring, diamond shard projectiles, high durability.';
+                    break;
+                default:
+                    nameElement.textContent = 'Unknown Alien';
+                    imageElement.src = 'images/default.png';
+                    abilitiesElement.textContent = 'Data unavailable.';
+            }
+        }
+
+        // --- Feature 2 JS: Accordion for Episode Guide ---
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                /* Toggle between adding and removing the "active" class,
+                to highlight the button that controls the panel */
+                this.classList.toggle("active");
+
+                /* Toggle between hiding and showing the active panel */
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.display = "block";
+                    panel.style.maxHeight = panel.scrollHeight + "px"; // Smooth transition for height
+                }
+            });
+        }
+
+        // --- Feature 3 JS: Simple Quiz Logic ---
+        function checkAnswer(answer) {
+            const messageElement = document.getElementById('result-message');
+            if (answer === 'heatblast') {
+                messageElement.textContent = 'Correct! Ben chose Heatblast first!';
+                messageElement.style.color = 'green';
+            } else {
+                messageElement.textContent = 'Incorrect, the Omnitrix timed out and gave him Heatblast instead!';
+                messageElement.style.color = 'red';
+            }
+        }
+    </script>
+
+</body>
+    </html>
+    <p>$15.00</p>
                 <button class="add-to-cart">Add to Cart</button>
             </div>
             <div class="product">
@@ -128,4 +353,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
