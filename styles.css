@@ -1,3 +1,4 @@
+/* Reset some default styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,20 +6,25 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
     line-height: 1.6;
 }
 
+/* Header styling */
 header {
-    background-color: #333;
+    background-color: #007BFF;
     color: #fff;
-    padding: 10px 0;
+    padding: 20px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 header .logo h1 {
+    font-size: 2rem;
     margin-left: 20px;
 }
 
@@ -29,64 +35,173 @@ header nav ul {
 }
 
 header nav ul li {
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 header nav ul li a {
     color: #fff;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 1rem;
+    transition: color 0.3s ease;
 }
 
-section {
-    padding: 20px;
+header nav ul li a:hover {
+    color: #ff9800;
 }
 
-#home .intro {
+/* Hero Section */
+#home {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 100px 20px;
     text-align: center;
-    margin-top: 50px;
 }
 
+#home h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+#home p {
+    font-size: 1.2rem;
+}
+
+/* Product Section */
 #products {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    padding: 50px 20px;
+    text-align: center;
+}
+
+#products h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    justify-items: center;
 }
 
 .product {
-    width: 30%;
-    margin: 10px;
-    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product img {
     width: 100%;
-    height: auto;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product:hover img {
+    transform: scale(1.05);
+}
+
+.product h3 {
+    font-size: 1.5rem;
+    margin: 15px;
+}
+
+.product p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 15px;
 }
 
 button.add-to-cart {
-    background-color: #4CAF50;
+    background-color: #28a745;
     color: white;
     padding: 10px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
 }
 
 button.add-to-cart:hover {
-    background-color: #45a049;
+    background-color: #218838;
 }
 
+/* Cart Section */
 #cart {
+    padding: 50px 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 50px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+#cart h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#cart-items {
+    margin-bottom: 30px;
+}
+
+#cart-items div {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+button#checkout {
+    background-color: #ff9800;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button#checkout:hover {
+    background-color: #e68900;
+}
+
+/* Footer styling */
 footer {
     text-align: center;
-    background-color: #333;
-    color: #fff;
+    background-color: #007BFF;
+    color: white;
     padding: 10px;
     position: fixed;
     width: 100%;
     bottom: 0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    header nav ul {
+        display: block;
+        text-align: center;
+    }
+
+    header nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+
+    .product-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
 }
