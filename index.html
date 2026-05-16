@@ -1008,7 +1008,7 @@ document.getElementById('upload-form')
    RENDER NOTES
 -------------------------------- */
 
-function renderNotes(
+async function renderNotes(
     filterSubject = 'all',
     searchTerm = ''
 ) {
@@ -1017,6 +1017,22 @@ function renderNotes(
         document.getElementById('notes-grid');
 
     grid.innerHTML = '';
+
+    // REMOVE DELETED CLOUDINARY FILES
+    const validNotes = [];
+
+    for (const note of notes) {
+
+        const exists = await fileExists(note.fileURL);
+
+        if (exists) {
+            validNotes.push(note);
+        }
+    }
+
+    notes = validNotes;
+
+    saveData();
 
     const filtered = notes.filter(note => {
 
@@ -1358,6 +1374,24 @@ function initParticles() {
     }
 
     animate();
+}
+/* -------------------------------
+   CHECK FILE EXISTS
+-------------------------------- */
+
+async function fileExists(url) {
+
+    try {
+
+        const response = await fetch(url, {
+            method: 'HEAD'
+        });
+
+        return response.ok;
+
+    } catch {
+        return false;
+    }
 }
 </script>
 </body>
