@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jith Notes Hub | Modern Student Resource Platform</title>
+    <title>SmartNotes Hub | Modern Student Resource Platform</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -585,7 +585,7 @@
     <nav>
         <a href="#" class="logo">
             <i class="fas fa-graduation-cap"></i>
-            <span>JithNotes Hub</span>
+            <span>SmartNotes Hub</span>
         </a>
         <div class="nav-controls">
             <button class="theme-toggle" id="theme-btn">
@@ -697,702 +697,707 @@
         <p>&copy; 2024 SmartNotes Hub. Empowering students through collaboration.</p>
         <p style="font-size: 0.8rem; margin-top: 10px; color: var(--text-secondary)">Built with ❤️ for modern learners.</p>
     </footer>
-
-    <script>
-/* -------------------------------
-   CLOUDINARY CONFIG
--------------------------------- */
-
-const CLOUD_NAME = "dcic7twbm";
-const UPLOAD_PRESET = "smartnotes_upload";
-
-/* -------------------------------
-   APP STATE
--------------------------------- */
-
-let notes = [];
-
-const defaultNotes = [
-    {
-        id: 1,
-        title: "Calculus Fundamentals",
-        subject: "Maths",
-        description: "Complete guide to limits and derivatives.",
-        date: "Oct 12, 2023",
-        size: "2.4 MB",
-        type: "pdf",
-        downloads: 124,
-        fileURL: "https://example.com/sample.pdf"
-    }
-];
-
-/* -------------------------------
-   LOCAL STORAGE
--------------------------------- */
-
-function loadData() {
-
-    const saved = localStorage.getItem('smartnotes_data');
-
-    if (saved) {
-        notes = JSON.parse(saved);
-    } else {
-        notes = [...defaultNotes];
-        saveData();
-    }
-
-    renderNotes();
-}
-
-function saveData() {
-    localStorage.setItem(
-        'smartnotes_data',
-        JSON.stringify(notes)
-    );
-}
-
-/* -------------------------------
-   PAGE LOAD
--------------------------------- */
-
-window.onload = () => {
-
-    setTimeout(() => {
-
-        document.getElementById('loader').style.opacity = '0';
-
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-        }, 500);
-
-    }, 1000);
-
-    loadData();
-
-    initParticles();
-};
-
-/* -------------------------------
-   THEME TOGGLE
--------------------------------- */
-
-const themeBtn = document.getElementById('theme-btn');
-
-themeBtn.addEventListener('click', () => {
-
-    const body = document.body;
-
-    const isDark =
-        body.getAttribute('data-theme') === 'dark';
-
-    body.setAttribute(
-        'data-theme',
-        isDark ? 'light' : 'dark'
-    );
-
-    themeBtn.innerHTML = isDark
-        ? '<i class="fas fa-moon"></i>'
-        : '<i class="fas fa-sun"></i>';
-});
-
-/* -------------------------------
-   MODAL
--------------------------------- */
-
-const modal = document.getElementById('upload-modal');
-
-const dropZone = document.getElementById('drop-zone');
-
-const fileInput = document.getElementById('file-input');
-
-const fileNameDisplay =
-    document.getElementById('file-name-display');
-
-let selectedFile = null;
-
-function openModal() {
-    modal.classList.add('active');
-}
-
-function closeModal() {
-
-    modal.classList.remove('active');
-
-    resetForm();
-}
-
-function resetForm() {
-
-    document.getElementById('upload-form').reset();
-
-    selectedFile = null;
-
-    fileNameDisplay.textContent = '';
-}
-
-dropZone.onclick = () => fileInput.click();
-
-fileInput.onchange = (e) => {
-    handleFile(e.target.files[0]);
-};
-
-dropZone.ondragover = (e) => {
-
-    e.preventDefault();
-
-    dropZone.classList.add('dragover');
-};
-
-dropZone.ondragleave = () => {
-    dropZone.classList.remove('dragover');
-};
-
-dropZone.ondrop = (e) => {
-
-    e.preventDefault();
-
-    dropZone.classList.remove('dragover');
-
-    handleFile(e.dataTransfer.files[0]);
-};
-
-/* -------------------------------
-   FILE HANDLE
--------------------------------- */
-
-function handleFile(file) {
-
-    if (!file) return;
-
-    const allowedTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-powerpoint",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "image/jpeg",
-        "image/png"
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-
-        showToast("Invalid file type!");
-
-        return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-
-        showToast("Max file size is 10MB");
-
-        return;
-    }
-
-    selectedFile = file;
-
-    fileNameDisplay.textContent =
-        `Selected: ${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
-}
-
-/* -------------------------------
-   CLOUDINARY UPLOAD
--------------------------------- */
-
-async function uploadToCloudinary(file) {
-
-    const formData = new FormData();
-
-    formData.append("file", file);
-
-    formData.append(
-        "upload_preset",
-        UPLOAD_PRESET
-    );
-
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-        {
-            method: "POST",
-            body: formData
+    <script type="module">
+
+        /* -------------------------------
+           FIREBASE IMPORTS
+        -------------------------------- */
+        
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs
         }
-    );
-
-    const data = await response.json();
-
-    if (data.error) {
-        throw new Error(data.error.message);
-    }
-
-    return data.secure_url;
-}
-
-/* -------------------------------
-   FORM SUBMIT
--------------------------------- */
-
-document.getElementById('upload-form')
-.onsubmit = async (e) => {
-
-    e.preventDefault();
-
-    if (!selectedFile) {
-
-        showToast("Please select a file first!");
-
-        return;
-    }
-
-    try {
-
-        showToast("Uploading...");
-
-        const fileURL =
-            await uploadToCloudinary(selectedFile);
-
-        const newNote = {
-
-            id: Date.now(),
-
-            title:
-                document.getElementById('note-title').value,
-
-            subject:
-                document.getElementById('note-subject').value,
-
-            description:
-                document.getElementById('note-desc').value,
-
-            date:
-                new Date().toLocaleDateString(
-                    'en-US',
-                    {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    }
-                ),
-
-            size:
-                (selectedFile.size / (1024 * 1024))
-                .toFixed(1) + " MB",
-
-            type:
-                selectedFile.name
-                .split('.')
-                .pop()
-                .toLowerCase(),
-
-            downloads: 0,
-
-            fileURL: fileURL
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        /* -------------------------------
+           FIREBASE CONFIG
+        -------------------------------- */
+        
+        const firebaseConfig = {
+        
+            apiKey: "AIzaSyAWCvih1_yYuXjNx320hka5flfsSe_6LiM",
+        
+            authDomain: "website-3cb89.firebaseapp.com",
+        
+            projectId: "website-3cb89",
+        
+            storageBucket: "website-3cb89.firebasestorage.app",
+        
+            messagingSenderId: "947395440260",
+        
+            appId: "1:947395440260:web:b245ee3d304f0708f95cd1",
+        
+            measurementId: "G-HG2W6JHGMY"
         };
-
-        notes.unshift(newNote);
-
-        saveData();
-
-        renderNotes();
-
-        closeModal();
-
-        showToast("Note uploaded successfully!");
-
-    } catch (err) {
-
-        console.error(err);
-
-        showToast("Upload failed!");
-    }
-};
-
-/* -------------------------------
-   RENDER NOTES
--------------------------------- */
-
-async function renderNotes(
-    filterSubject = 'all',
-    searchTerm = ''
-) {
-
-    const grid =
-        document.getElementById('notes-grid');
-
-    grid.innerHTML = '';
-
-    // REMOVE DELETED CLOUDINARY FILES
-    const validNotes = [];
-
-    for (const note of notes) {
-
-        const exists = await fileExists(note.fileURL);
-
-        if (exists) {
-            validNotes.push(note);
+        
+        const app = initializeApp(firebaseConfig);
+        
+        const db = getFirestore(app);
+        
+        /* -------------------------------
+           CLOUDINARY CONFIG
+        -------------------------------- */
+        
+        const CLOUD_NAME = "dcic7twbm";
+        
+        const UPLOAD_PRESET = "smartnotes_upload";
+        
+        /* -------------------------------
+           APP STATE
+        -------------------------------- */
+        
+        let notes = [];
+        
+        let selectedFile = null;
+        
+        let currentSubject = 'all';
+        
+        let currentSearch = '';
+        
+        /* -------------------------------
+           LOAD FIREBASE DATA
+        -------------------------------- */
+        
+        async function loadData() {
+        
+            notes = [];
+        
+            const querySnapshot =
+                await getDocs(collection(db, "notes"));
+        
+            querySnapshot.forEach((doc) => {
+        
+                notes.push(doc.data());
+            });
+        
+            renderNotes();
         }
-    }
-
-    notes = validNotes;
-
-    saveData();
-
-    const filtered = notes.filter(note => {
-
-        const matchesSubject =
-            filterSubject === 'all' ||
-            note.subject === filterSubject;
-
-        const matchesSearch =
-            note.title.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-
-            note.subject.toLowerCase()
-            .includes(searchTerm.toLowerCase());
-
-        return matchesSubject && matchesSearch;
-    });
-
-    document.getElementById('note-count')
-    .textContent =
-        `${filtered.length} Note${filtered.length !== 1 ? 's' : ''} Found`;
-
-    if (filtered.length === 0) {
-
-        grid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-folder-open"></i>
-                <h3>No notes found</h3>
-            </div>
-        `;
-
-        return;
-    }
-
-    filtered.forEach(note => {
-
-        const card = document.createElement('div');
-
-        card.className = 'note-card';
-
-        card.innerHTML = `
-            <span class="note-badge badge-${note.subject.toLowerCase()}">
-                ${note.subject}
-            </span>
-
-            <div class="note-icon">
-                <i class="fas ${getFileIcon(note.type)}"></i>
-            </div>
-
-            <div class="note-info">
-                <h3>${escapeHTML(note.title)}</h3>
-
-                <p>
-                    ${escapeHTML(
-                        note.description ||
-                        'No description available.'
-                    )}
-                </p>
-            </div>
-
-            <div class="note-meta">
-
-                <div>
-                    <i class="far fa-calendar-alt"></i>
-                    ${note.date}
-                    <br>
-
-                    <i class="fas fa-hdd"></i>
-                    ${note.size}
-
-                    •
-
-                    <i class="fas fa-download"></i>
-                    ${note.downloads}
-                </div>
-
-                <button
-                    class="btn-download"
-                    onclick="downloadNote(${note.id})"
-                >
-                    <i class="fas fa-arrow-down"></i>
-                </button>
-
-            </div>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-/* -------------------------------
-   FILE ICON
--------------------------------- */
-
-function getFileIcon(type) {
-
-    switch(type) {
-
-        case 'pdf':
-            return 'fa-file-pdf';
-
-        case 'docx':
-            return 'fa-file-word';
-
-        case 'ppt':
-        case 'pptx':
-            return 'fa-file-powerpoint';
-
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-            return 'fa-file-image';
-
-        default:
-            return 'fa-file-alt';
-    }
-}
-
-/* -------------------------------
-   DOWNLOAD NOTE
--------------------------------- */
-
-function downloadNote(id) {
-
-    const note =
-        notes.find(n => n.id === id);
-
-    if (!note) return;
-
-    note.downloads++;
-
-    saveData();
-
-    renderNotes(
-        currentSubject,
-        currentSearch
-    );
-
-    showToast(`Downloading: ${note.title}`);
-
-    window.open(note.fileURL, '_blank');
-}
-
-/* -------------------------------
-   SEARCH & FILTER
--------------------------------- */
-
-let currentSubject = 'all';
-
-let currentSearch = '';
-
-document.getElementById('search-input')
-.oninput = (e) => {
-
-    currentSearch = e.target.value;
-
-    renderNotes(
-        currentSubject,
-        currentSearch
-    );
-};
-
-document.querySelectorAll('.filter-btn')
-.forEach(btn => {
-
-    btn.onclick = () => {
-
-        document.querySelectorAll('.filter-btn')
-        .forEach(b => b.classList.remove('active'));
-
-        btn.classList.add('active');
-
-        currentSubject = btn.dataset.subject;
-
-        renderNotes(
-            currentSubject,
-            currentSearch
-        );
-    };
-});
-
-/* -------------------------------
-   TOAST
--------------------------------- */
-
-function showToast(msg) {
-
-    const toast =
-        document.getElementById('toast');
-
-    toast.textContent = msg;
-
-    toast.classList.add('show');
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-/* -------------------------------
-   ESCAPE HTML
--------------------------------- */
-
-function escapeHTML(str) {
-
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-/* -------------------------------
-   BACK TO TOP
--------------------------------- */
-
-const topBtn =
-    document.getElementById('top-btn');
-
-window.onscroll = () => {
-
-    if (window.scrollY > 300) {
-        topBtn.classList.add('visible');
-    } else {
-        topBtn.classList.remove('visible');
-    }
-};
-
-/* -------------------------------
-   PARTICLES
--------------------------------- */
-
-function initParticles() {
-
-    const canvas =
-        document.getElementById('bg-canvas');
-
-    const ctx =
-        canvas.getContext('2d');
-
-    let particles = [];
-
-    function resize() {
-
-        canvas.width = window.innerWidth;
-
-        canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resize);
-
-    resize();
-
-    class Particle {
-
-        constructor() {
-            this.reset();
+        
+        /* -------------------------------
+           PAGE LOAD
+        -------------------------------- */
+        
+        window.onload = async () => {
+        
+            setTimeout(() => {
+        
+                document.getElementById('loader').style.opacity = '0';
+        
+                setTimeout(() => {
+        
+                    document.getElementById('loader').style.display = 'none';
+        
+                }, 500);
+        
+            }, 1000);
+        
+            await loadData();
+        
+            initParticles();
+        };
+        
+        /* -------------------------------
+           THEME TOGGLE
+        -------------------------------- */
+        
+        const themeBtn =
+            document.getElementById('theme-btn');
+        
+        themeBtn.addEventListener('click', () => {
+        
+            const body = document.body;
+        
+            const isDark =
+                body.getAttribute('data-theme') === 'dark';
+        
+            body.setAttribute(
+                'data-theme',
+                isDark ? 'light' : 'dark'
+            );
+        
+            themeBtn.innerHTML = isDark
+                ? '<i class="fas fa-moon"></i>'
+                : '<i class="fas fa-sun"></i>';
+        });
+        
+        /* -------------------------------
+           MODAL
+        -------------------------------- */
+        
+        const modal =
+            document.getElementById('upload-modal');
+        
+        const dropZone =
+            document.getElementById('drop-zone');
+        
+        const fileInput =
+            document.getElementById('file-input');
+        
+        const fileNameDisplay =
+            document.getElementById('file-name-display');
+        
+        window.openModal = function () {
+        
+            modal.classList.add('active');
+        };
+        
+        window.closeModal = function () {
+        
+            modal.classList.remove('active');
+        
+            resetForm();
+        };
+        
+        function resetForm() {
+        
+            document.getElementById('upload-form').reset();
+        
+            selectedFile = null;
+        
+            fileNameDisplay.textContent = '';
         }
-
-        reset() {
-
-            this.x = Math.random() * canvas.width;
-
-            this.y = Math.random() * canvas.height;
-
-            this.size = Math.random() * 3 + 1;
-
-            this.speedX =
-                (Math.random() - 0.5) * 0.5;
-
-            this.speedY =
-                (Math.random() - 0.5) * 0.5;
-
-            this.alpha =
-                Math.random() * 0.5 + 0.2;
+        
+        dropZone.onclick = () => fileInput.click();
+        
+        fileInput.onchange = (e) => {
+        
+            handleFile(e.target.files[0]);
+        };
+        
+        dropZone.ondragover = (e) => {
+        
+            e.preventDefault();
+        
+            dropZone.classList.add('dragover');
+        };
+        
+        dropZone.ondragleave = () => {
+        
+            dropZone.classList.remove('dragover');
+        };
+        
+        dropZone.ondrop = (e) => {
+        
+            e.preventDefault();
+        
+            dropZone.classList.remove('dragover');
+        
+            handleFile(e.dataTransfer.files[0]);
+        };
+        
+        /* -------------------------------
+           HANDLE FILE
+        -------------------------------- */
+        
+        function handleFile(file) {
+        
+            if (!file) return;
+        
+            const allowedTypes = [
+        
+                "application/pdf",
+        
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        
+                "application/vnd.ms-powerpoint",
+        
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        
+                "image/jpeg",
+        
+                "image/png"
+            ];
+        
+            if (!allowedTypes.includes(file.type)) {
+        
+                showToast("Invalid file type!");
+        
+                return;
+            }
+        
+            if (file.size > 10 * 1024 * 1024) {
+        
+                showToast("Max file size is 10MB");
+        
+                return;
+            }
+        
+            selectedFile = file;
+        
+            fileNameDisplay.textContent =
+                `Selected: ${file.name}`;
         }
-
-        update() {
-
-            this.x += this.speedX;
-
-            this.y += this.speedY;
-
-            if (
-                this.x < 0 ||
-                this.x > canvas.width ||
-                this.y < 0 ||
-                this.y > canvas.height
-            ) {
-                this.reset();
+        
+        /* -------------------------------
+           CLOUDINARY UPLOAD
+        -------------------------------- */
+        
+        async function uploadToCloudinary(file) {
+        
+            const formData = new FormData();
+        
+            formData.append("file", file);
+        
+            formData.append(
+                "upload_preset",
+                UPLOAD_PRESET
+            );
+        
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+        
+            const data = await response.json();
+        
+            if (data.error) {
+        
+                throw new Error(data.error.message);
+            }
+        
+            return data.secure_url;
+        }
+        
+        /* -------------------------------
+           FORM SUBMIT
+        -------------------------------- */
+        
+        document.getElementById('upload-form')
+        .onsubmit = async (e) => {
+        
+            e.preventDefault();
+        
+            if (!selectedFile) {
+        
+                showToast("Please select a file!");
+        
+                return;
+            }
+        
+            try {
+        
+                showToast("Uploading...");
+        
+                const fileURL =
+                    await uploadToCloudinary(selectedFile);
+        
+                const newNote = {
+        
+                    id: Date.now(),
+        
+                    title:
+                        document.getElementById('note-title').value,
+        
+                    subject:
+                        document.getElementById('note-subject').value,
+        
+                    description:
+                        document.getElementById('note-desc').value,
+        
+                    date:
+                        new Date().toLocaleDateString(),
+        
+                    size:
+                        (selectedFile.size / (1024 * 1024))
+                        .toFixed(1) + " MB",
+        
+                    type:
+                        selectedFile.name
+                        .split('.')
+                        .pop()
+                        .toLowerCase(),
+        
+                    downloads: 0,
+        
+                    fileURL: fileURL
+                };
+        
+                await addDoc(
+                    collection(db, "notes"),
+                    newNote
+                );
+        
+                notes.unshift(newNote);
+        
+                renderNotes();
+        
+                closeModal();
+        
+                showToast("Upload success!");
+        
+            } catch (err) {
+        
+                console.error(err);
+        
+                showToast("Upload failed!");
+            }
+        };
+        
+        /* -------------------------------
+           CHECK FILE EXISTS
+        -------------------------------- */
+        
+        async function fileExists(url) {
+        
+            try {
+        
+                const response = await fetch(url, {
+                    method: 'HEAD'
+                });
+        
+                return response.ok;
+        
+            } catch {
+        
+                return false;
             }
         }
-
-        draw() {
-
-            const color =
-                document.body.getAttribute('data-theme') === 'dark'
-                ? '255,255,255'
-                : '99,102,241';
-
-            ctx.fillStyle =
-                `rgba(${color}, ${this.alpha})`;
-
-            ctx.beginPath();
-
-            ctx.arc(
-                this.x,
-                this.y,
-                this.size,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fill();
+        
+        /* -------------------------------
+           RENDER NOTES
+        -------------------------------- */
+        
+        async function renderNotes() {
+        
+            const grid =
+                document.getElementById('notes-grid');
+        
+            grid.innerHTML = '';
+        
+            const validNotes = [];
+        
+            for (const note of notes) {
+        
+                const exists =
+                    await fileExists(note.fileURL);
+        
+                if (exists) {
+        
+                    validNotes.push(note);
+                }
+            }
+        
+            notes = validNotes;
+        
+            const filtered = notes.filter(note => {
+        
+                const matchesSubject =
+                    currentSubject === 'all' ||
+                    note.subject === currentSubject;
+        
+                const matchesSearch =
+                    note.title.toLowerCase()
+                    .includes(currentSearch.toLowerCase());
+        
+                return matchesSubject && matchesSearch;
+            });
+        
+            document.getElementById('note-count')
+            .textContent =
+                `${filtered.length} Notes Found`;
+        
+            if (filtered.length === 0) {
+        
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>No notes found</h3>
+                    </div>
+                `;
+        
+                return;
+            }
+        
+            filtered.forEach(note => {
+        
+                const card =
+                    document.createElement('div');
+        
+                card.className = 'note-card';
+        
+                card.innerHTML = `
+        
+                    <span class="note-badge badge-${note.subject.toLowerCase()}">
+                        ${note.subject}
+                    </span>
+        
+                    <div class="note-icon">
+                        <i class="fas ${getFileIcon(note.type)}"></i>
+                    </div>
+        
+                    <div class="note-info">
+        
+                        <h3>${escapeHTML(note.title)}</h3>
+        
+                        <p>${escapeHTML(note.description)}</p>
+        
+                    </div>
+        
+                    <div class="note-meta">
+        
+                        <div>
+        
+                            ${note.date}
+        
+                            <br>
+        
+                            ${note.size}
+        
+                        </div>
+        
+                        <button
+                            class="btn-download"
+                            onclick="window.open('${note.fileURL}')"
+                        >
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+        
+                    </div>
+                `;
+        
+                grid.appendChild(card);
+            });
         }
-    }
-
-    for (let i = 0; i < 50; i++) {
-        particles.push(new Particle());
-    }
-
-    function animate() {
-
-        ctx.clearRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        particles.forEach(p => {
-
-            p.update();
-
-            p.draw();
+        
+        /* -------------------------------
+           FILE ICON
+        -------------------------------- */
+        
+        function getFileIcon(type) {
+        
+            switch(type) {
+        
+                case 'pdf':
+                    return 'fa-file-pdf';
+        
+                case 'docx':
+                    return 'fa-file-word';
+        
+                case 'ppt':
+                case 'pptx':
+                    return 'fa-file-powerpoint';
+        
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                    return 'fa-file-image';
+        
+                default:
+                    return 'fa-file-alt';
+            }
+        }
+        
+        /* -------------------------------
+           SEARCH
+        -------------------------------- */
+        
+        document.getElementById('search-input')
+        .oninput = (e) => {
+        
+            currentSearch = e.target.value;
+        
+            renderNotes();
+        };
+        
+        /* -------------------------------
+           FILTERS
+        -------------------------------- */
+        
+        document.querySelectorAll('.filter-btn')
+        .forEach(btn => {
+        
+            btn.onclick = () => {
+        
+                document.querySelectorAll('.filter-btn')
+                .forEach(b =>
+                    b.classList.remove('active')
+                );
+        
+                btn.classList.add('active');
+        
+                currentSubject =
+                    btn.dataset.subject;
+        
+                renderNotes();
+            };
         });
+        
+        /* -------------------------------
+           TOAST
+        -------------------------------- */
+        
+        function showToast(msg) {
+        
+            const toast =
+                document.getElementById('toast');
+        
+            toast.textContent = msg;
+        
+            toast.classList.add('show');
+        
+            setTimeout(() => {
+        
+                toast.classList.remove('show');
+        
+            }, 3000);
+        }
+        
+        /* -------------------------------
+           ESCAPE HTML
+        -------------------------------- */
+        
+        function escapeHTML(str) {
+        
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+        
+        /* -------------------------------
+           BACK TO TOP
+        -------------------------------- */
+        
+        const topBtn =
+            document.getElementById('top-btn');
+        
+        window.onscroll = () => {
+        
+            if (window.scrollY > 300) {
+        
+                topBtn.classList.add('visible');
+        
+            } else {
+        
+                topBtn.classList.remove('visible');
+            }
+        };
+        
+        /* -------------------------------
+           PARTICLES
+        -------------------------------- */
+        
+        function initParticles() {
+        
+            const canvas =
+                document.getElementById('bg-canvas');
+        
+            const ctx =
+                canvas.getContext('2d');
+        
+            let particles = [];
+        
+            function resize() {
+        
+                canvas.width = window.innerWidth;
+        
+                canvas.height = window.innerHeight;
+            }
+        
+            resize();
+        
+            window.addEventListener('resize', resize);
+        
+            class Particle {
+        
+                constructor() {
+        
+                    this.reset();
+                }
+        
+                reset() {
+        
+                    this.x =
+                        Math.random() * canvas.width;
+        
+                    this.y =
+                        Math.random() * canvas.height;
+        
+                    this.size =
+                        Math.random() * 3 + 1;
+        
+                    this.speedX =
+                        (Math.random() - 0.5) * 0.5;
+        
+                    this.speedY =
+                        (Math.random() - 0.5) * 0.5;
+        
+                    this.alpha =
+                        Math.random() * 0.5 + 0.2;
+                }
+        
+                update() {
+        
+                    this.x += this.speedX;
+        
+                    this.y += this.speedY;
+        
+                    if (
+                        this.x < 0 ||
+                        this.x > canvas.width ||
+                        this.y < 0 ||
+                        this.y > canvas.height
+                    ) {
+        
+                        this.reset();
+                    }
+                }
+        
+                draw() {
+        
+                    ctx.fillStyle =
+                        'rgba(99,102,241,0.4)';
+        
+                    ctx.beginPath();
+        
+                    ctx.arc(
+                        this.x,
+                        this.y,
+                        this.size,
+                        0,
+                        Math.PI * 2
+                    );
+        
+                    ctx.fill();
+                }
+            }
+        
+            for (let i = 0; i < 50; i++) {
+        
+                particles.push(new Particle());
+            }
+        
+            function animate() {
+        
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+        
+                particles.forEach(p => {
+        
+                    p.update();
+        
+                    p.draw();
+                });
+        
+                requestAnimationFrame(animate);
+            }
+        
+            animate();
+        }
+        
+        </script>
 
-        requestAnimationFrame(animate);
-    }
-
-    animate();
-}
-/* -------------------------------
-   CHECK FILE EXISTS
--------------------------------- */
-
-async function fileExists(url) {
-
-    try {
-
-        const response = await fetch(url, {
-            method: 'HEAD'
-        });
-
-        return response.ok;
-
-    } catch {
-        return false;
-    }
-}
-</script>
 </body>
 </html>
