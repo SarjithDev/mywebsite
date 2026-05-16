@@ -760,7 +760,7 @@
         let currentSearch = '';
         
         /* -------------------------------
-           LOAD FIREBASE DATA
+           LOAD DATA
         -------------------------------- */
         
         async function loadData() {
@@ -938,33 +938,41 @@
         -------------------------------- */
         
         async function uploadToCloudinary(file) {
-
-const formData = new FormData();
-
-formData.append("file", file);
-
-formData.append(
-    "upload_preset",
-    UPLOAD_PRESET
-);
-
-const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`,
-    {
-        method: "POST",
-        body: formData
-    }
-);
-
-const data = await response.json();
-
-if (data.error) {
-
-    throw new Error(data.error.message);
-}
-
-return data.secure_url;
-}
+        
+            const formData = new FormData();
+        
+            formData.append("file", file);
+        
+            formData.append(
+                "upload_preset",
+                UPLOAD_PRESET
+            );
+        
+            const isPDF =
+                file.type === "application/pdf";
+        
+            const uploadType =
+                isPDF ? "raw" : "image";
+        
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${uploadType}/upload`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+        
+            const data = await response.json();
+        
+            console.log(data);
+        
+            if (data.error) {
+        
+                throw new Error(data.error.message);
+            }
+        
+            return data.secure_url;
+        }
         
         /* -------------------------------
            FORM SUBMIT
@@ -1042,50 +1050,15 @@ return data.secure_url;
         };
         
         /* -------------------------------
-           CHECK FILE EXISTS
-        -------------------------------- */
-        
-        async function fileExists(url) {
-        
-            try {
-        
-                const response = await fetch(url, {
-                    method: 'HEAD'
-                });
-        
-                return response.ok;
-        
-            } catch {
-        
-                return false;
-            }
-        }
-        
-        /* -------------------------------
            RENDER NOTES
         -------------------------------- */
         
-        async function renderNotes() {
+        function renderNotes() {
         
             const grid =
                 document.getElementById('notes-grid');
         
             grid.innerHTML = '';
-        
-            const validNotes = [];
-        
-            for (const note of notes) {
-        
-                const exists =
-                    await fileExists(note.fileURL);
-        
-                if (exists) {
-        
-                    validNotes.push(note);
-                }
-            }
-        
-            notes = validNotes;
         
             const filtered = notes.filter(note => {
         
@@ -1137,7 +1110,7 @@ return data.secure_url;
         
                         <h3>${escapeHTML(note.title)}</h3>
         
-                        <p>${escapeHTML(note.description)}</p>
+                        <p>${escapeHTML(note.description || "")}</p>
         
                     </div>
         
@@ -1155,7 +1128,7 @@ return data.secure_url;
         
                         <button
                             class="btn-download"
-                            onclick="window.open('${note.fileURL}')"
+                            onclick="window.open('${note.fileURL}','_blank')"
                         >
                             <i class="fas fa-arrow-down"></i>
                         </button>
