@@ -933,11 +933,11 @@
                 `Selected: ${file.name}`;
         }
         
-        /* -------------------------------
-           CLOUDINARY UPLOAD
-        -------------------------------- */
-        
-        async function uploadToCloudinary(file) {
+      /* -------------------------------
+   CLOUDINARY UPLOAD
+-------------------------------- */
+
+async function uploadToCloudinary(file) {
 
 const formData = new FormData();
 
@@ -948,6 +948,7 @@ formData.append(
     UPLOAD_PRESET
 );
 
+// AUTO upload supports PDF/images/docs
 const response = await fetch(
     `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
     {
@@ -965,19 +966,34 @@ if (data.error) {
     throw new Error(data.error.message);
 }
 
-// FORCE PUBLIC PDF URL
-let fileURL = data.secure_url;
+// CREATE PUBLIC DOWNLOAD URL
+let fileURL = "";
 
+// FOR PDF FILES
 if (file.type === "application/pdf") {
 
-    fileURL = fileURL.replace(
-        "/upload/",
-        "/upload/fl_attachment/"
-    );
+    fileURL =
+        `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/fl_attachment/${data.public_id}.pdf`;
+}
+
+// FOR IMAGES
+else if (
+    file.type.includes("image")
+) {
+
+    fileURL = data.secure_url;
+}
+
+// FOR DOCX / PPT / PPTX
+else {
+
+    fileURL =
+        `https://res.cloudinary.com/${CLOUD_NAME}/raw/upload/fl_attachment/${data.public_id}`;
 }
 
 return fileURL;
 }
+
         
         /* -------------------------------
            FORM SUBMIT
