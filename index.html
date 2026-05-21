@@ -1109,7 +1109,7 @@ document.getElementById("upload-form")
                 .toLowerCase(),
 
             downloads: 0,
-
+originalName: selectedFile.name,
             fileURL: fileURL
         };
 
@@ -1225,7 +1225,7 @@ function renderNotes() {
 
                     <button
                         class="btn-download"
-                        onclick="downloadFile('${note.fileURL}')"
+                        onclick="downloadFile('${note.fileURL}','${note.originalName || "download"}')"leURL}')"
                     >
                         <i class="fas fa-arrow-down"></i>
                     </button>
@@ -1251,10 +1251,39 @@ function renderNotes() {
    DOWNLOAD FILE
 -------------------------------- */
 
-window.downloadFile = function(url) {
+window.downloadFile = async function(url, fileName) {
 
-    window.open(url, "_blank");
-};
+try {
+
+    const response = await fetch(url);
+
+    const blob = await response.blob();
+
+    const blobURL =
+        window.URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = blobURL;
+
+    a.download = fileName;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(blobURL);
+
+} catch(err) {
+
+    console.error(err);
+
+    showToast("Download failed!");
+}
+};;
 
 /* -------------------------------
    DELETE NOTE
