@@ -608,15 +608,9 @@
             <button class="theme-toggle" id="theme-btn">
                 <i class="fas fa-moon"></i>
             </button>
-        
-            <button class="btn-primary" id="admin-btn">
-                <i class="fas fa-lock"></i>
-                <span>Admin Login</span>
-            </button>
-        
-            <button class="btn-primary" id="upload-btn" style="display:none;" onclick="openModal()">
+            <button class="btn-primary" onclick="openModal()">
                 <i class="fas fa-plus"></i>
-                <span>Upload</span>
+                <span class="hide-mobile">Upload</span>
             </button>
         </div>
     </nav>
@@ -711,11 +705,8 @@
     </div>
 
     <!-- UI Components -->
-    <div class="floating-action"
-    id="floating-upload-btn"
-    onclick="openModal()"
-    title="Quick Upload"
-    style="display:none;">        <i class="fas fa-plus"></i>
+    <div class="floating-action" onclick="openModal()" title="Quick Upload">
+        <i class="fas fa-plus"></i>
     </div>
 
     <div class="back-to-top" id="top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
@@ -827,13 +818,7 @@
             orderBy
         }
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import {
-    getAuth,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        
         /* -------------------------------
            FIREBASE CONFIG
         -------------------------------- */
@@ -858,8 +843,6 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         const app = initializeApp(firebaseConfig);
         
         const db = getFirestore(app);
-        const auth = getAuth(app);
-        
         
         /* -------------------------------
            CLOUDINARY CONFIG
@@ -886,83 +869,35 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         -------------------------------- */
         
         async function loadData() {
-
-try {
-
-    notes = [];
-
-    const q = collection(db, "notes");
-
-    const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach((docSnap) => {
-
-        notes.push({
-            firebaseId: docSnap.id,
-            ...docSnap.data()
-        });
-
-    });
-
-    renderNotes();
-
-} catch (err) {
-
-    console.error(err);
-
-    showToast("Failed to load notes");
-}
-}
-const uploadBtn =
-    document.getElementById("upload-btn");
-
-const adminBtn =
-    document.getElementById("admin-btn");
-
-const loginModal =
-    document.getElementById("login-modal");
-
-const floatingUploadBtn =
-    document.querySelector(".floating-action");
-/* -------------------------------
-   AUTH STATE
--------------------------------- */
-
-onAuthStateChanged(auth, (user) => {
-
-    if(user) {
-
-        uploadBtn.style.display = "flex";
-floatingUploadBtn.style.display = "flex";
-        adminBtn.innerHTML = `
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        `;
-
-        adminBtn.onclick = async () => {
-
-            await signOut(auth);
-
-renderNotes();
-
-showToast("Logged out");
-        };
-
-    } else {
-
-        uploadBtn.style.display = "none";
-floatingUploadBtn.style.display = "none";
-        adminBtn.innerHTML = `
-            <i class="fas fa-lock"></i>
-            <span>Admin Login</span>
-        `;
-
-        adminBtn.onclick = () => {
-
-            loginModal.classList.add("active");
-        };
-    }
-});
+        
+            try {
+        
+                notes = [];
+        
+                const q = query(
+                    collection(db, "notes"),
+                    orderBy("id", "desc")
+                );
+        
+                const querySnapshot = await getDocs(q);
+        
+                querySnapshot.forEach((docSnap) => {
+        
+                    notes.push({
+                        firebaseId: docSnap.id,
+                        ...docSnap.data()
+                    });
+                });
+        
+                renderNotes();
+        
+            } catch (err) {
+        
+                console.error(err);
+        
+                showToast("Failed to load notes");
+            }
+        }
         
         /* -------------------------------
            PAGE LOAD
@@ -1383,7 +1318,7 @@ floatingUploadBtn.style.display = "none";
         
                         </div>
         
-                        <div style="display:flex; gap:10px;" class="admin-actions">
+                        <div style="display:flex; gap:10px;">
         
                             <button
                                 class="btn-download"
@@ -1392,15 +1327,13 @@ floatingUploadBtn.style.display = "none";
                                 <i class="fas fa-arrow-down"></i>
                             </button>
         
-                            ${auth.currentUser ? `
-<button
-    class="btn-download"
-    style="background:#ef4444"
-    onclick="deleteNote('${note.firebaseId}')"
->
-    <i class="fas fa-trash"></i>
-</button>
-` : ""}
+                            <button
+                                class="btn-download"
+                                style="background:#ef4444"
+                                onclick="deleteNote('${note.firebaseId}')"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
         
                         </div>
         
@@ -1675,80 +1608,8 @@ floatingUploadBtn.style.display = "none";
         
             animate();
         }
-        /* -------------------------------
-   LOGIN MODAL FUNCTIONS
--------------------------------- */
-
-window.closeLoginModal = function () {
-
-loginModal.classList.remove("active");
-
-};
-
-/* -------------------------------
-ADMIN LOGIN
--------------------------------- */
-
-window.adminLogin = async function () {
-
-const email =
-    document.getElementById("admin-email").value;
-
-const password =
-    document.getElementById("admin-password").value;
-
-if (!email || !password) {
-
-    showToast("Enter email & password");
-
-    return;
-}
-
-try {
-
-    await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-    );
-
-    loginModal.classList.remove("active");
-
-    showToast("Login successful!");
-
-} catch (err) {
-
-    console.error(err);
-
-    showToast("Invalid email or password");
-}
-};
         
         </script>
 
-<!-- Admin Login Modal -->
-<div class="modal" id="login-modal">
-    <div class="modal-content">
-        <i class="fas fa-times close-modal" onclick="closeLoginModal()"></i>
-
-        <h2 style="margin-bottom:20px;">Admin Login</h2>
-
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="admin-email">
-        </div>
-
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="admin-password">
-        </div>
-
-        <button class="btn-primary"
-            style="width:100%;justify-content:center;"
-            onclick="adminLogin()">
-            Login
-        </button>
-    </div>
-</div>
 </body>
 </html>
