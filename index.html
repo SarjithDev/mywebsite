@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartNotes Hub | Modern Student Resource Platform</title>
+    <title>Jith-Notes Hub | Modern Student Resource Platform</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -603,7 +603,7 @@
     <nav>
         <a href="#" class="logo">
             <i class="fas fa-graduation-cap"></i>
-            <span>SmartNotes Hub</span>
+            <span>JithNotes Hub</span>
         </a>
         <div class="nav-controls">
             <button class="theme-toggle" id="theme-btn">
@@ -716,89 +716,170 @@
 
     <div id="toast" class="toast">Action Successful!</div>
 
-    <footer>
+  <footer style="
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 20px 30px 20px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+">
+    <div style="
+        position: absolute;
+        top: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 100px;
+        background: var(--accent-glow);
+        filter: blur(80px);
+        opacity: 0.3;
+        pointer-events: none;
+    "></div>
 
-        <!-- Profile Image -->
-        <div style="margin-bottom:20px;">
-            <img 
-                src="photo.jpg"
-                alt="Sarjith"
-                style="
-                    width:120px;
-                    height:120px;
-                    border-radius:50%;
-                    object-fit:cover;
-                    border:4px solid var(--accent-primary);
-                    box-shadow:0 0 25px var(--accent-glow);
-                "
-            >
-        </div>
+    <div style="position: relative; display: inline-block; margin-bottom: 25px;">
+        <img 
+            src="photo.jpg" 
+            alt="Sarjith" 
+            style="
+                width: 130px;
+                height: 130px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid var(--accent-primary);
+                box-shadow: 0 8px 32px var(--accent-glow);
+                transition: transform 0.4s ease;
+            "
+            onmouseover="this.style.transform='scale(1.08) rotate(3deg)'"
+            onmouseout="this.style.transform='scale(1) rotate(0deg)'"
+        >
+        <span style="
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--accent-primary);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        ">CREATOR</span>
+    </div>
+
+    <h2 style="
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--accent-primary);
+        letter-spacing: 1px;
+        text-shadow: 0 2px 10px var(--accent-glow);
+    ">
+        Sarjith
+    </h2>
     
-        <!-- Name -->
-        <h2 style="
-            font-size:2rem;
-            margin-bottom:10px;
-            color:var(--accent-primary);
-        ">
-            Sarjith
-        </h2>
-    
-        <!-- Description -->
-        <p style="
-            max-width:600px;
-            margin:auto;
-            line-height:1.7;
-            color:var(--text-secondary);
-            margin-bottom:20px;
-        ">
-            A/L Maths Student • Frontend Web Developer • Creator of SmartNotes Hub 🚀  
-            Passionate about coding, designing modern websites, and helping students learn together.
-        </p>
-    
-        <!-- Social Links -->
-        <div class="social-links">
-    
-            <a href="https://facebook.com/" target="_blank">
-                <i class="fab fa-facebook"></i>
-            </a>
-    
-            <a href="https://instagram.com/YOUR_USERNAME" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-    
-            <a href="https://github.com/" target="_blank">
-                <i class="fab fa-github"></i>
-            </a>
-    
-            <a href="https://linkedin.com/" target="_blank">
-                <i class="fab fa-linkedin"></i>
-            </a>
-    
-        </div>
-    
-        <!-- Contact -->
-        <div style="margin-top:20px; color:var(--text-secondary);">
-    
-            <p>
-                📧 sarjithsarjith2008@gmail.com.com
-            </p>
-    
-            <p style="margin-top:8px;">
-                📱 +94 74 104 7137 (Whatsapp)
-            </p>
-    
-        </div>
-    
-        <!-- Copyright -->
-        <p style="
-            margin-top:30px;
-            font-size:0.85rem;
-            color:var(--text-secondary);
-        ">
-            © 2026 SmartNotes Hub • Built with ❤️ by Sarjith
-        </p>
-    
-    </footer>
+    <div style="
+        font-size: 0.95rem;
+        color: var(--accent-primary);
+        font-weight: 500;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    ">
+        A/L Maths Student &bull; Frontend Developer
+    </div>
+
+    <p style="
+        max-width: 650px;
+        margin: 0 auto 30px auto;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        font-size: 1.05rem;
+    ">
+        🚀 Creator of <strong style="color: #fff; text-shadow: 0 0 10px var(--accent-glow);">SmartNotes Hub</strong>. 
+        Passionate about coding, designing modern websites, and building the ultimate digital learning space for students.
+    </p>
+
+    <div class="social-links" style="
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 35px;
+    ">
+        <a href="https://facebook.com/" target="_blank" style="color: var(--text-secondary); font-size: 1.6rem; transition: all 0.3s ease;" onmouseover="this.style.color='var(--accent-primary)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.color='var(--text-secondary)'; this.style.transform='translateY(0)';">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://instagram.com/YOUR_USERNAME" target="_blank" style="color: var(--text-secondary); font-size: 1.6rem; transition: all 0.3s ease;" onmouseover="this.style.color='var(--accent-primary)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.color='var(--text-secondary)'; this.style.transform='translateY(0)';">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://github.com/" target="_blank" style="color: var(--text-secondary); font-size: 1.6rem; transition: all 0.3s ease;" onmouseover="this.style.color='var(--accent-primary)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.color='var(--text-secondary)'; this.style.transform='translateY(0)';">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="https://linkedin.com/" target="_blank" style="color: var(--text-secondary); font-size: 1.6rem; transition: all 0.3s ease;" onmouseover="this.style.color='var(--accent-primary)'; this.style.transform='translateY(-5px)';" onmouseout="this.style.color='var(--text-secondary)'; this.style.transform='translateY(0)';">
+            <i class="fab fa-linkedin"></i>
+        </a>
+    </div>
+
+    <div style="
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        max-width: 500px;
+        margin: 0 auto 35px auto;
+    ">
+        <a href="mailto:sarjithsarjith2008@gmail.com" style="
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--accent-primary)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.05)'; this.style.color='var(--text-secondary)';">
+            📧 <span style="font-size: 0.85rem;">sarjithsarjith2008@gmail.com</span>
+        </a>
+
+        <a href="https://wa.me/94741047137" target="_blank" style="
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        " onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='#25D366'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.05)'; this.style.color='var(--text-secondary)';">
+            📱 <span style="font-size: 0.85rem;">+94 74 104 7137 (WhatsApp)</span>
+        </a>
+    </div>
+
+    <hr style="border: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); margin-bottom: 20px;">
+
+    <p style="
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        letter-spacing: 0.5px;
+    ">
+        &copy; 2026 <span style="color: #fff; font-weight: 500;">SmartNotes Hub</span> &bull; Built with 💖 by Sarjith
+    </p>
+</footer>
     <script type="module">
 
         /* -------------------------------
